@@ -18,6 +18,11 @@ let package = Package(
             resources: [
                 .copy("Resources")
             ]
+        ),
+        .testTarget(
+            name: "NuggsTests",
+            dependencies: ["Nuggs"],
+            path: "Tests"
         )
     ]
 )
