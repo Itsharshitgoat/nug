@@ -5,6 +5,8 @@ struct ContentView: View {
     @State private var inputText: String = ""
     @StateObject private var floatingManager = FloatingWindowManager.shared
 
+    @Environment(\.accessibilityReduceMotion) var reduceMotion
+
     var body: some View {
         ZStack(alignment: .top) {
             // Main Content Canvas
@@ -39,8 +41,12 @@ struct ContentView: View {
             x: -2, // Slight left bias to emphasize the sharp architectural corner
             y: floatingManager.isMoving ? 15 : 10
         )
-        // Subtle spatial elevation scale
-        .scaleEffect(floatingManager.isMoving && !floatingManager.isHovered ? 1.02 : 1.0)
+        // Summon animation states (Opacity, Scale, Vertical Offset) respecting Reduce Motion
+        .opacity(floatingManager.isVisible ? 1.0 : 0.0)
+        .scaleEffect(floatingManager.isVisible ? (floatingManager.isMoving && !floatingManager.isHovered && !reduceMotion ? 1.02 : 1.0) : (reduceMotion ? 1.0 : 0.85))
+        .offset(y: floatingManager.isVisible ? 0 : (reduceMotion ? 0 : 20)) // Disable upward materialization if reduced motion
+
+        .animation(.spring(response: 0.5, dampingFraction: 0.75), value: floatingManager.isVisible)
         .animation(.spring(response: 0.4, dampingFraction: 0.7), value: floatingManager.isMoving)
         .animation(.spring(response: 0.4, dampingFraction: 0.7), value: floatingManager.isHovered)
         .overlay(
@@ -61,6 +67,9 @@ struct ContentView: View {
 
             window.level = .floating
             window.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary]
+
+            // Initially ignore mouse events until summoned
+            window.ignoresMouseEvents = true
 
             // Connect to manager
             FloatingWindowManager.shared.window = window
