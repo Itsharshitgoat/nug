@@ -260,7 +260,10 @@ class FloatingWindowManager: ObservableObject {
         self.displayLink = link
 
         let displayLinkOutputCallback: CVDisplayLinkOutputCallback = { (_, _, _, _, _, displayLinkContext) -> CVReturn in
-            let manager = Unmanaged<FloatingWindowManager>.fromOpaque(displayLinkContext!).takeUnretainedValue()
+            guard let context = displayLinkContext else {
+                return kCVReturnError
+            }
+            let manager = Unmanaged<FloatingWindowManager>.fromOpaque(context).takeUnretainedValue()
             manager.updateFrame()
             return kCVReturnSuccess
         }
