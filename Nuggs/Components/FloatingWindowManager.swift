@@ -204,6 +204,19 @@ class FloatingWindowManager: ObservableObject {
         }
     }
 
+    private func startDisplayLink() {
+        if let link = displayLink, !CVDisplayLinkIsRunning(link) {
+            lastUpdateTime = CACurrentMediaTime()
+            CVDisplayLinkStart(link)
+        }
+    }
+
+    private func stopDisplayLink() {
+        if let link = displayLink, CVDisplayLinkIsRunning(link) {
+            CVDisplayLinkStop(link)
+        }
+    }
+
     private func updateTargetPosition(mouseLoc: CGPoint) {
         guard let window = window else { return }
 
@@ -251,6 +264,9 @@ class FloatingWindowManager: ObservableObject {
             self.currentPosition = self.targetPosition
             window.setFrameOrigin(self.currentPosition)
             isFirstDisplay = false
+        } else {
+            // Only start animating if we are already visible and not the first display snap
+            startDisplayLink()
         }
     }
 
@@ -270,10 +286,8 @@ class FloatingWindowManager: ObservableObject {
 
         if let link = self.displayLink {
             CVDisplayLinkSetOutputCallback(link, displayLinkOutputCallback, Unmanaged.passUnretained(self).toOpaque())
-            CVDisplayLinkStart(link)
+            // Note: We don't start the link here anymore. It will be started when needed.
         }
-
-        lastUpdateTime = CACurrentMediaTime()
     }
 
     private func updateFrame() {
@@ -289,6 +303,7 @@ class FloatingWindowManager: ObservableObject {
                     self.isMoving = false
                     self.velocity = .zero // Instantly halt when hovered
                 }
+                self.stopDisplayLink()
                 return
             }
 
@@ -309,6 +324,7 @@ class FloatingWindowManager: ObservableObject {
                 if self.isMoving {
                     self.isMoving = false
                 }
+                self.stopDisplayLink()
                 return
             }
 
