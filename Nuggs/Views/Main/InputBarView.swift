@@ -2,7 +2,6 @@ import SwiftUI
 
 struct InputBarView: View {
     @Binding var text: String
-    @State private var isHovered: Bool = false
     @State private var isButtonHovered: Bool = false
     @State private var isButtonPressed: Bool = false
 
