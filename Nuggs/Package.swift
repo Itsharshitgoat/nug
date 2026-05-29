@@ -14,15 +14,13 @@ let package = Package(
         .executableTarget(
             name: "Nuggs",
             dependencies: [],
-            path: "Nuggs",
             resources: [
                 .copy("Resources")
             ]
         ),
         .testTarget(
             name: "NuggsTests",
-            dependencies: ["Nuggs"],
-            path: "Tests"
+            dependencies: ["Nuggs"]
         )
     ]
 )
