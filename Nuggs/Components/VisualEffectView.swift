@@ -24,22 +24,3 @@ struct VisualEffectView: NSViewRepresentable {
         nsView.isEmphasized = isEmphasized
     }
 }
-
-// A modifier to easily add a visual effect background
-extension View {
-    func visualEffect(
-        material: NSVisualEffectView.Material = .popover,
-        blendingMode: NSVisualEffectView.BlendingMode = .behindWindow,
-        state: NSVisualEffectView.State = .active,
-        isEmphasized: Bool = false
-    ) -> some View {
-        self.background(
-            VisualEffectView(
-                material: material,
-                blendingMode: blendingMode,
-                state: state,
-                isEmphasized: isEmphasized
-            )
-        )
-    }
-}
