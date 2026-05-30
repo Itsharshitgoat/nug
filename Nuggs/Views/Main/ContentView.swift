@@ -77,7 +77,8 @@ struct ContentView: View {
             window.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary]
 
             // Initially ignore mouse events until summoned
-            window.ignoresMouseEvents = true
+            // window.ignoresMouseEvents = true
+            window.ignoresMouseEvents = !FloatingWindowManager.shared.isVisible
 
             // Connect to manager
             FloatingWindowManager.shared.window = window

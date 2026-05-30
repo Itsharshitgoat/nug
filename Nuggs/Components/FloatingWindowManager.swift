@@ -21,7 +21,7 @@ class FloatingWindowManager: ObservableObject {
 
     @Published var isMoving: Bool = false
     @Published var isHovered: Bool = false
-    @Published var isVisible: Bool = false
+    @Published var isVisible: Bool = true // Set to true so the user can see it initially
 
     private var eventMonitors: [Any] = []
     private var displayLink: CVDisplayLink?
